@@ -1,7 +1,7 @@
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
-const dbPath = path.resolve(process.cwd(), 'pages', 'api', 'db.json');
+const dbPath = path.resolve(process.cwd(), "pages", "api", "db.json");
 
 function readDb() {
   const dbRaw = fs.readFileSync(dbPath);
@@ -11,13 +11,13 @@ function readDb() {
 export default function handler(req, res) {
   const db = readDb();
 
-  if (req.method === 'GET') {
+  if (req.method === "GET") {
     res.status(200).json({
       stats: db.dashboardStats,
       recentActivity: db.recentActivity,
     });
   } else {
-    res.setHeader('Allow', ['GET']);
+    res.setHeader("Allow", ["GET"]);
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }

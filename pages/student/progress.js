@@ -1,35 +1,41 @@
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
-import Sidebar from '../../components/Sidebar'
-import axios from 'axios'
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import Sidebar from "../../components/Sidebar";
+import axios from "axios";
 
 export default function StudentProgress() {
-  const [courses, setCourses] = useState([])
-  const [analytics, setAnalytics] = useState({})
-  const [loading, setLoading] = useState(true)
-  const router = useRouter()
+  const [courses, setCourses] = useState([]);
+  const [analytics, setAnalytics] = useState({});
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    const role = localStorage.getItem('role')
-    if (!token || role !== 'student') {
-      router.push('/login')
-      return
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    if (!token || role !== "student") {
+      router.push("/login");
+      return;
     }
 
     const fetchProgressData = async () => {
       try {
-        const response = await axios.get('/api/courses', {
+        const response = await axios.get("/api/courses", {
           headers: { Authorization: `Bearer ${token}` },
-        })
-        setCourses(response.data)
+        });
+        setCourses(response.data);
 
         // Calculate analytics
-        const totalCourses = response.data.length
-        const completedCourses = response.data.filter(c => c.progress === 100).length
-        const avgProgress = response.data.reduce((sum, c) => sum + c.progress, 0) / totalCourses
-        const totalTimeSpent = response.data.reduce((sum, c) => sum + (c.timeSpent || 0), 0)
-        const quizScores = [85, 92, 78, 96, 88] // Mock quiz scores
+        const totalCourses = response.data.length;
+        const completedCourses = response.data.filter(
+          (c) => c.progress === 100,
+        ).length;
+        const avgProgress =
+          response.data.reduce((sum, c) => sum + c.progress, 0) / totalCourses;
+        const totalTimeSpent = response.data.reduce(
+          (sum, c) => sum + (c.timeSpent || 0),
+          0,
+        );
+        const quizScores = [85, 92, 78, 96, 88]; // Mock quiz scores
 
         setAnalytics({
           totalCourses,
@@ -37,19 +43,19 @@ export default function StudentProgress() {
           avgProgress: Math.round(avgProgress),
           totalTimeSpent,
           quizScores,
-          weeklyProgress: [20, 35, 45, 60, 75, 85, 95] // Mock weekly progress data
-        })
+          weeklyProgress: [20, 35, 45, 60, 75, 85, 95], // Mock weekly progress data
+        });
       } catch (err) {
-        console.error('Failed to fetch progress data', err)
+        console.error("Failed to fetch progress data", err);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchProgressData()
-  }, [router])
+    fetchProgressData();
+  }, [router]);
 
-  if (loading) return <div>Loading...</div>
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="flex">
@@ -61,19 +67,27 @@ export default function StudentProgress() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <h3 className="text-lg font-semibold mb-2">Total Courses</h3>
-            <p className="text-3xl font-bold text-blue-600">{analytics.totalCourses}</p>
+            <p className="text-3xl font-bold text-blue-600">
+              {analytics.totalCourses}
+            </p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <h3 className="text-lg font-semibold mb-2">Completed</h3>
-            <p className="text-3xl font-bold text-green-600">{analytics.completedCourses}</p>
+            <p className="text-3xl font-bold text-green-600">
+              {analytics.completedCourses}
+            </p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <h3 className="text-lg font-semibold mb-2">Avg Progress</h3>
-            <p className="text-3xl font-bold text-purple-600">{analytics.avgProgress}%</p>
+            <p className="text-3xl font-bold text-purple-600">
+              {analytics.avgProgress}%
+            </p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md text-center">
             <h3 className="text-lg font-semibold mb-2">Time Spent</h3>
-            <p className="text-3xl font-bold text-orange-600">{Math.round(analytics.totalTimeSpent / 60)}h</p>
+            <p className="text-3xl font-bold text-orange-600">
+              {Math.round(analytics.totalTimeSpent / 60)}h
+            </p>
           </div>
         </div>
 
@@ -117,7 +131,9 @@ export default function StudentProgress() {
 
         {/* Course Progress Details */}
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-xl font-semibold mb-6">Course Progress Details</h3>
+          <h3 className="text-xl font-semibold mb-6">
+            Course Progress Details
+          </h3>
           <div className="space-y-6">
             {courses.map((course) => (
               <div key={course.id} className="border-b pb-6 last:border-b-0">
@@ -127,7 +143,9 @@ export default function StudentProgress() {
                     <p className="text-gray-600">{course.category}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-blue-600">{course.progress}%</p>
+                    <p className="text-2xl font-bold text-blue-600">
+                      {course.progress}%
+                    </p>
                     <p className="text-sm text-gray-500">Complete</p>
                   </div>
                 </div>
@@ -142,19 +160,27 @@ export default function StudentProgress() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                   <div>
                     <p className="text-gray-500">Lessons Completed</p>
-                    <p className="font-semibold">{Math.round(course.progress / 10)} / 10</p>
+                    <p className="font-semibold">
+                      {Math.round(course.progress / 10)} / 10
+                    </p>
                   </div>
                   <div>
                     <p className="text-gray-500">Time Spent</p>
-                    <p className="font-semibold">{course.timeSpent || Math.floor(Math.random() * 20) + 5}h</p>
+                    <p className="font-semibold">
+                      {course.timeSpent || Math.floor(Math.random() * 20) + 5}h
+                    </p>
                   </div>
                   <div>
                     <p className="text-gray-500">Last Accessed</p>
-                    <p className="font-semibold">{course.lastAccessed || '2 days ago'}</p>
+                    <p className="font-semibold">
+                      {course.lastAccessed || "2 days ago"}
+                    </p>
                   </div>
                   <div>
                     <p className="text-gray-500">Next Milestone</p>
-                    <p className="font-semibold">Lesson {Math.round(course.progress / 10) + 1}</p>
+                    <p className="font-semibold">
+                      Lesson {Math.round(course.progress / 10) + 1}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -163,5 +189,5 @@ export default function StudentProgress() {
         </div>
       </div>
     </div>
-  )
+  );
 }

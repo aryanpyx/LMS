@@ -5,6 +5,7 @@ A comprehensive Learning Management System built with Next.js, Tailwind CSS, and
 ## Features
 
 ### 🎓 Student Dashboard
+
 - Course enrollment and progress tracking
 - Quiz participation and certificate generation
 - Payment processing for courses
@@ -12,16 +13,19 @@ A comprehensive Learning Management System built with Next.js, Tailwind CSS, and
 - Bookmark management and notifications
 
 ### 👨‍🏫 Instructor Dashboard
+
 - Course creation and management
 - Student analytics and performance tracking
 - Marketplace integration for course sales
 
 ### 🛠️ Admin Dashboard
+
 - User management (students, instructors)
 - Course and payment oversight
 - Marketplace administration
 
 ### 💳 Payment Integration
+
 - Stripe payment processing
 - PayPal integration
 - Razorpay support for international payments
@@ -36,23 +40,27 @@ A comprehensive Learning Management System built with Next.js, Tailwind CSS, and
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js (v16 or higher)
 - npm or yarn
 
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/sainivaibhav742/LMS.git
 cd LMS
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Create environment variables file (`.env.local`):
+
 ```env
 # Add your payment gateway keys and other environment variables here
 STRIPE_PUBLIC_KEY=your_stripe_public_key
@@ -61,6 +69,7 @@ RAZORPAY_KEY_ID=your_razorpay_key_id
 ```
 
 4. Run the development server:
+
 ```bash
 npm run dev
 ```

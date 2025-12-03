@@ -1,19 +1,19 @@
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
-import Sidebar from '../../components/Sidebar'
-import axios from 'axios'
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import Sidebar from "../../components/Sidebar";
+import axios from "axios";
 
 export default function StudentQuizzes() {
-  const [quizzes, setQuizzes] = useState([])
-  const [loading, setLoading] = useState(true)
-  const router = useRouter()
+  const [quizzes, setQuizzes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    const role = localStorage.getItem('role')
-    if (!token || role !== 'student') {
-      router.push('/login')
-      return
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    if (!token || role !== "student") {
+      router.push("/login");
+      return;
     }
 
     const fetchQuizzes = async () => {
@@ -22,47 +22,47 @@ export default function StudentQuizzes() {
         const mockQuizzes = [
           {
             id: 1,
-            courseTitle: 'Introduction to React',
-            title: 'React Fundamentals Quiz',
+            courseTitle: "Introduction to React",
+            title: "React Fundamentals Quiz",
             questions: 10,
             timeLimit: 15,
             attempts: 2,
             bestScore: 85,
-            status: 'completed'
+            status: "completed",
           },
           {
             id: 2,
-            courseTitle: 'Advanced JavaScript',
-            title: 'ES6+ Features Quiz',
+            courseTitle: "Advanced JavaScript",
+            title: "ES6+ Features Quiz",
             questions: 15,
             timeLimit: 20,
             attempts: 1,
             bestScore: null,
-            status: 'available'
+            status: "available",
           },
           {
             id: 3,
-            courseTitle: 'Data Structures and Algorithms',
-            title: 'Sorting Algorithms Quiz',
+            courseTitle: "Data Structures and Algorithms",
+            title: "Sorting Algorithms Quiz",
             questions: 12,
             timeLimit: 18,
             attempts: 0,
             bestScore: null,
-            status: 'locked'
-          }
-        ]
-        setQuizzes(mockQuizzes)
+            status: "locked",
+          },
+        ];
+        setQuizzes(mockQuizzes);
       } catch (err) {
-        console.error('Failed to fetch quizzes', err)
+        console.error("Failed to fetch quizzes", err);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchQuizzes()
-  }, [router])
+    fetchQuizzes();
+  }, [router]);
 
-  if (loading) return <div>Loading...</div>
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="flex">
@@ -77,13 +77,20 @@ export default function StudentQuizzes() {
                   <h3 className="text-xl font-semibold mb-1">{quiz.title}</h3>
                   <p className="text-gray-600">{quiz.courseTitle}</p>
                 </div>
-                <div className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  quiz.status === 'completed' ? 'bg-green-100 text-green-800' :
-                  quiz.status === 'available' ? 'bg-blue-100 text-blue-800' :
-                  'bg-gray-100 text-gray-800'
-                }`}>
-                  {quiz.status === 'completed' ? 'Completed' :
-                   quiz.status === 'available' ? 'Available' : 'Locked'}
+                <div
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    quiz.status === "completed"
+                      ? "bg-green-100 text-green-800"
+                      : quiz.status === "available"
+                        ? "bg-blue-100 text-blue-800"
+                        : "bg-gray-100 text-gray-800"
+                  }`}
+                >
+                  {quiz.status === "completed"
+                    ? "Completed"
+                    : quiz.status === "available"
+                      ? "Available"
+                      : "Locked"}
                 </div>
               </div>
 
@@ -109,18 +116,21 @@ export default function StudentQuizzes() {
               </div>
 
               <div className="flex gap-4">
-                {quiz.status === 'available' && (
+                {quiz.status === "available" && (
                   <button className="bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700">
                     Start Quiz
                   </button>
                 )}
-                {quiz.status === 'completed' && (
+                {quiz.status === "completed" && (
                   <button className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
                     Review Answers
                   </button>
                 )}
-                {quiz.status === 'locked' && (
-                  <button className="bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed" disabled>
+                {quiz.status === "locked" && (
+                  <button
+                    className="bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed"
+                    disabled
+                  >
                     Complete Course First
                   </button>
                 )}
@@ -130,5 +140,5 @@ export default function StudentQuizzes() {
         </div>
       </div>
     </div>
-  )
+  );
 }

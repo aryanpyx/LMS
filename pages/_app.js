@@ -1,5 +1,13 @@
-import '../styles/globals.css'
+import "../styles/globals.css";
+import AiAssistant from '../components/AiAssistant';
 
-export default function App({ Component, pageProps }) {
-  return <Component {...pageProps} />
+function MyApp({ Component, pageProps }) {
+  return (
+    <>
+      <Component {...pageProps} />
+      <AiAssistant />
+    </>
+  );
 }
+
+export default MyApp;

@@ -1,19 +1,19 @@
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
-import Sidebar from '../../components/Sidebar'
-import axios from 'axios'
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import Sidebar from "../../components/Sidebar";
+import axios from "axios";
 
 export default function StudentCertificates() {
-  const [certificates, setCertificates] = useState([])
-  const [loading, setLoading] = useState(true)
-  const router = useRouter()
+  const [certificates, setCertificates] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    const role = localStorage.getItem('role')
-    if (!token || role !== 'student') {
-      router.push('/login')
-      return
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    if (!token || role !== "student") {
+      router.push("/login");
+      return;
     }
 
     const fetchCertificates = async () => {
@@ -22,35 +22,37 @@ export default function StudentCertificates() {
         const mockCertificates = [
           {
             id: 1,
-            courseTitle: 'Introduction to React',
-            completionDate: '2023-05-15',
-            certificateId: 'CERT-001-2023',
-            instructor: 'Jane Smith',
-            grade: 'A',
-            thumbnail: 'https://via.placeholder.com/300x200?text=React+Certificate'
+            courseTitle: "Introduction to React",
+            completionDate: "2023-05-15",
+            certificateId: "CERT-001-2023",
+            instructor: "Jane Smith",
+            grade: "A",
+            thumbnail:
+              "https://via.placeholder.com/300x200?text=React+Certificate",
           },
           {
             id: 2,
-            courseTitle: 'JavaScript Fundamentals',
-            completionDate: '2023-04-20',
-            certificateId: 'CERT-002-2023',
-            instructor: 'John Doe',
-            grade: 'A+',
-            thumbnail: 'https://via.placeholder.com/300x200?text=JS+Certificate'
-          }
-        ]
-        setCertificates(mockCertificates)
+            courseTitle: "JavaScript Fundamentals",
+            completionDate: "2023-04-20",
+            certificateId: "CERT-002-2023",
+            instructor: "John Doe",
+            grade: "A+",
+            thumbnail:
+              "https://via.placeholder.com/300x200?text=JS+Certificate",
+          },
+        ];
+        setCertificates(mockCertificates);
       } catch (err) {
-        console.error('Failed to fetch certificates', err)
+        console.error("Failed to fetch certificates", err);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchCertificates()
-  }, [router])
+    fetchCertificates();
+  }, [router]);
 
-  if (loading) return <div>Loading...</div>
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="flex">
@@ -62,24 +64,36 @@ export default function StudentCertificates() {
           <div className="bg-white p-8 rounded-lg shadow-md text-center">
             <div className="text-6xl mb-4">🏆</div>
             <h3 className="text-xl font-semibold mb-2">No Certificates Yet</h3>
-            <p className="text-gray-600">Complete your courses to earn certificates!</p>
+            <p className="text-gray-600">
+              Complete your courses to earn certificates!
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {certificates.map((cert) => (
               <div key={cert.id} className="bg-white p-6 rounded-lg shadow-md">
                 <div className="flex items-center mb-4">
-                  <img src={cert.thumbnail} alt={cert.courseTitle} className="w-16 h-16 object-cover rounded mr-4" />
+                  <img
+                    src={cert.thumbnail}
+                    alt={cert.courseTitle}
+                    className="w-16 h-16 object-cover rounded mr-4"
+                  />
                   <div>
-                    <h3 className="text-lg font-semibold">{cert.courseTitle}</h3>
-                    <p className="text-gray-600">Certificate ID: {cert.certificateId}</p>
+                    <h3 className="text-lg font-semibold">
+                      {cert.courseTitle}
+                    </h3>
+                    <p className="text-gray-600">
+                      Certificate ID: {cert.certificateId}
+                    </p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
                     <p className="text-sm text-gray-500">Completion Date</p>
-                    <p className="font-semibold">{new Date(cert.completionDate).toLocaleDateString()}</p>
+                    <p className="font-semibold">
+                      {new Date(cert.completionDate).toLocaleDateString()}
+                    </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Grade</p>
@@ -130,5 +144,5 @@ export default function StudentCertificates() {
         </div>
       </div>
     </div>
-  )
+  );
 }

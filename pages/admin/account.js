@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import Sidebar from '../../components/Sidebar';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import Sidebar from "../../components/Sidebar";
+import axios from "axios";
 
 export default function AdminAccount() {
   const [profile, setProfile] = useState({});
@@ -11,20 +11,20 @@ export default function AdminAccount() {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role');
-    if (!token || role !== 'admin') {
-      router.push('/login');
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    if (!token || role !== "admin") {
+      router.push("/login");
       return;
     }
 
     const fetchProfile = async () => {
       try {
-        const response = await axios.get('/api/admin/account');
+        const response = await axios.get("/api/admin/account");
         setProfile(response.data);
         setFormData(response.data);
       } catch (err) {
-        console.error('Failed to fetch profile', err);
+        console.error("Failed to fetch profile", err);
       } finally {
         setLoading(false);
       }
@@ -34,31 +34,31 @@ export default function AdminAccount() {
   }, [router]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
+    const { name, value } = e.target;
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
-    }))
-  }
+      [name]: value,
+    }));
+  };
 
   const handleSave = async () => {
     try {
       // In real app, this would make an API call to update profile
-      setProfile(formData)
-      setEditing(false)
-      alert('Profile updated successfully!')
+      setProfile(formData);
+      setEditing(false);
+      alert("Profile updated successfully!");
     } catch (err) {
-      console.error('Failed to update profile', err)
-      alert('Failed to update profile')
+      console.error("Failed to update profile", err);
+      alert("Failed to update profile");
     }
-  }
+  };
 
   const handleCancel = () => {
-    setFormData(profile)
-    setEditing(false)
-  }
+    setFormData(profile);
+    setEditing(false);
+  };
 
-  if (loading) return <div>Loading...</div>
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="flex">
@@ -66,7 +66,9 @@ export default function AdminAccount() {
       <div className="flex-1 p-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Admin Account Settings</h1>
-          <p className="text-gray-600">Manage your administrator profile and system preferences</p>
+          <p className="text-gray-600">
+            Manage your administrator profile and system preferences
+          </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -85,15 +87,21 @@ export default function AdminAccount() {
                 <div className="mt-4 space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Member Since:</span>
-                    <span className="font-semibold">{new Date(profile.joinDate).toLocaleDateString()}</span>
+                    <span className="font-semibold">
+                      {new Date(profile.joinDate).toLocaleDateString()}
+                    </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Last Login:</span>
-                    <span className="font-semibold">{new Date(profile.lastLogin).toLocaleDateString()}</span>
+                    <span className="font-semibold">
+                      {new Date(profile.lastLogin).toLocaleDateString()}
+                    </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">System Uptime:</span>
-                    <span className="font-semibold text-green-600">{profile.systemStats?.uptime}</span>
+                    <span className="font-semibold text-green-600">
+                      {profile.systemStats?.uptime}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -105,15 +113,21 @@ export default function AdminAccount() {
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Total Logins</span>
-                  <span className="font-semibold">{profile.systemStats?.totalLogins.toLocaleString()}</span>
+                  <span className="font-semibold">
+                    {profile.systemStats?.totalLogins.toLocaleString()}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Actions Performed</span>
-                  <span className="font-semibold">{profile.systemStats?.actionsPerformed.toLocaleString()}</span>
+                  <span className="font-semibold">
+                    {profile.systemStats?.actionsPerformed.toLocaleString()}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Reports Generated</span>
-                  <span className="font-semibold">{profile.systemStats?.reportsGenerated}</span>
+                  <span className="font-semibold">
+                    {profile.systemStats?.reportsGenerated}
+                  </span>
                 </div>
               </div>
             </div>
@@ -166,12 +180,14 @@ export default function AdminAccount() {
                 {/* Basic Information */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Full Name
+                    </label>
                     {editing ? (
                       <input
                         type="text"
                         name="name"
-                        value={formData.name || ''}
+                        value={formData.name || ""}
                         onChange={handleInputChange}
                         className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       />
@@ -180,12 +196,14 @@ export default function AdminAccount() {
                     )}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Email
+                    </label>
                     {editing ? (
                       <input
                         type="email"
                         name="email"
-                        value={formData.email || ''}
+                        value={formData.email || ""}
                         onChange={handleInputChange}
                         className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       />
@@ -197,11 +215,13 @@ export default function AdminAccount() {
 
                 {/* Bio */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Bio
+                  </label>
                   {editing ? (
                     <textarea
                       name="bio"
-                      value={formData.bio || ''}
+                      value={formData.bio || ""}
                       onChange={handleInputChange}
                       rows={4}
                       className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -214,57 +234,84 @@ export default function AdminAccount() {
                 {/* Contact Information */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Phone
+                    </label>
                     {editing ? (
                       <input
                         type="tel"
                         name="phone"
-                        value={formData.contactInfo?.phone || ''}
-                        onChange={(e) => setFormData(prev => ({
-                          ...prev,
-                          contactInfo: { ...prev.contactInfo, phone: e.target.value }
-                        }))}
+                        value={formData.contactInfo?.phone || ""}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            contactInfo: {
+                              ...prev.contactInfo,
+                              phone: e.target.value,
+                            },
+                          }))
+                        }
                         className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       />
                     ) : (
-                      <p className="text-gray-900">{profile.contactInfo?.phone}</p>
+                      <p className="text-gray-900">
+                        {profile.contactInfo?.phone}
+                      </p>
                     )}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Emergency Contact</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Emergency Contact
+                    </label>
                     {editing ? (
                       <input
                         type="tel"
                         name="emergency"
-                        value={formData.contactInfo?.emergency || ''}
-                        onChange={(e) => setFormData(prev => ({
-                          ...prev,
-                          contactInfo: { ...prev.contactInfo, emergency: e.target.value }
-                        }))}
+                        value={formData.contactInfo?.emergency || ""}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            contactInfo: {
+                              ...prev.contactInfo,
+                              emergency: e.target.value,
+                            },
+                          }))
+                        }
                         className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       />
                     ) : (
-                      <p className="text-gray-900">{profile.contactInfo?.emergency}</p>
+                      <p className="text-gray-900">
+                        {profile.contactInfo?.emergency}
+                      </p>
                     )}
                   </div>
                 </div>
 
                 {/* Address */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Address
+                  </label>
                   {editing ? (
                     <textarea
                       name="address"
-                      value={formData.contactInfo?.address || ''}
-                      onChange={(e) => setFormData(prev => ({
-                        ...prev,
-                        contactInfo: { ...prev.contactInfo, address: e.target.value }
-                      }))}
+                      value={formData.contactInfo?.address || ""}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          contactInfo: {
+                            ...prev.contactInfo,
+                            address: e.target.value,
+                          },
+                        }))
+                      }
                       rows={2}
                       className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                   ) : (
-                    <p className="text-gray-900">{profile.contactInfo?.address}</p>
+                    <p className="text-gray-900">
+                      {profile.contactInfo?.address}
+                    </p>
                   )}
                 </div>
               </div>
@@ -278,30 +325,52 @@ export default function AdminAccount() {
               <div className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Two-Factor Authentication</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Two-Factor Authentication
+                    </label>
                     <div className="flex items-center">
-                      <div className={`w-3 h-3 rounded-full mr-2 ${profile.securitySettings?.twoFactorEnabled ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                      <div
+                        className={`w-3 h-3 rounded-full mr-2 ${profile.securitySettings?.twoFactorEnabled ? "bg-green-500" : "bg-red-500"}`}
+                      ></div>
                       <span className="text-sm text-gray-600">
-                        {profile.securitySettings?.twoFactorEnabled ? 'Enabled' : 'Disabled'}
+                        {profile.securitySettings?.twoFactorEnabled
+                          ? "Enabled"
+                          : "Disabled"}
                       </span>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Last Password Change</label>
-                    <p className="text-gray-900">{new Date(profile.securitySettings?.lastPasswordChange).toLocaleDateString()}</p>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Last Password Change
+                    </label>
+                    <p className="text-gray-900">
+                      {new Date(
+                        profile.securitySettings?.lastPasswordChange,
+                      ).toLocaleDateString()}
+                    </p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Login Alerts</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Login Alerts
+                    </label>
                     <div className="flex items-center">
-                      <div className={`w-3 h-3 rounded-full mr-2 ${profile.securitySettings?.loginAlerts ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                      <div
+                        className={`w-3 h-3 rounded-full mr-2 ${profile.securitySettings?.loginAlerts ? "bg-green-500" : "bg-red-500"}`}
+                      ></div>
                       <span className="text-sm text-gray-600">
-                        {profile.securitySettings?.loginAlerts ? 'Enabled' : 'Disabled'}
+                        {profile.securitySettings?.loginAlerts
+                          ? "Enabled"
+                          : "Disabled"}
                       </span>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Session Timeout</label>
-                    <p className="text-gray-900">{profile.securitySettings?.sessionTimeout}</p>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Session Timeout
+                    </label>
+                    <p className="text-gray-900">
+                      {profile.securitySettings?.sessionTimeout}
+                    </p>
                   </div>
                 </div>
                 <div className="mt-6 space-x-4">
@@ -318,5 +387,5 @@ export default function AdminAccount() {
         </div>
       </div>
     </div>
-  )
+  );
 }

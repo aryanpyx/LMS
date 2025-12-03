@@ -1,6 +1,6 @@
 {
   "name": "lms-frontend",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev -p 3000",
@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@stripe/stripe-js": "^8.1.0",
     "axios": "^1.5.0",
     "next": "^13.5.6",

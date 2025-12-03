@@ -1,29 +1,29 @@
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import Sidebar from '../../components/Sidebar';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import Sidebar from "../../components/Sidebar";
+import axios from "axios";
 
 export default function AdminPayments() {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [activeTab, setActiveTab] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role');
-    if (!token || role !== 'admin') {
-      router.push('/login');
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    if (!token || role !== "admin") {
+      router.push("/login");
       return;
     }
 
     const fetchPaymentsData = async () => {
       try {
-        const response = await axios.get('/api/admin/payments');
+        const response = await axios.get("/api/admin/payments");
         setPayments(response.data);
       } catch (err) {
-        console.error('Failed to fetch payments data', err);
+        console.error("Failed to fetch payments data", err);
       } finally {
         setLoading(false);
       }
@@ -32,48 +32,65 @@ export default function AdminPayments() {
     fetchPaymentsData();
   }, [router]);
 
-  const filteredPayments = payments.filter(payment => {
-    const matchesSearch = payment.student.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         payment.course.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         payment.transactionId.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = activeTab === 'all' || payment.status === activeTab
-    return matchesSearch && matchesStatus
-  })
+  const filteredPayments = payments.filter((payment) => {
+    const matchesSearch =
+      payment.student.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      payment.course.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      payment.transactionId.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = activeTab === "all" || payment.status === activeTab;
+    return matchesSearch && matchesStatus;
+  });
 
   const handleRefundPayment = (paymentId) => {
-    if (confirm('Are you sure you want to process a refund for this payment?')) {
-      setPayments(payments.map(payment =>
-        payment.id === paymentId
-          ? { ...payment, status: 'refunded', refundable: false }
-          : payment
-      ))
+    if (
+      confirm("Are you sure you want to process a refund for this payment?")
+    ) {
+      setPayments(
+        payments.map((payment) =>
+          payment.id === paymentId
+            ? { ...payment, status: "refunded", refundable: false }
+            : payment,
+        ),
+      );
     }
-  }
+  };
 
   const handleProcessPayment = (paymentId) => {
-    setPayments(payments.map(payment =>
-      payment.id === paymentId
-        ? { ...payment, status: 'completed' }
-        : payment
-    ))
-  }
+    setPayments(
+      payments.map((payment) =>
+        payment.id === paymentId
+          ? { ...payment, status: "completed" }
+          : payment,
+      ),
+    );
+  };
 
   const getStatusBadge = (status) => {
     const statusConfig = {
-      completed: { color: 'bg-green-100 text-green-800', label: 'Completed' },
-      pending: { color: 'bg-yellow-100 text-yellow-800', label: 'Pending' },
-      refunded: { color: 'bg-red-100 text-red-800', label: 'Refunded' },
-      failed: { color: 'bg-gray-100 text-gray-800', label: 'Failed' }
-    }
-    const config = statusConfig[status] || statusConfig.failed
-    return <span className={`px-2 py-1 text-xs rounded-full ${config.color}`}>{config.label}</span>
-  }
+      completed: { color: "bg-green-100 text-green-800", label: "Completed" },
+      pending: { color: "bg-yellow-100 text-yellow-800", label: "Pending" },
+      refunded: { color: "bg-red-100 text-red-800", label: "Refunded" },
+      failed: { color: "bg-gray-100 text-gray-800", label: "Failed" },
+    };
+    const config = statusConfig[status] || statusConfig.failed;
+    return (
+      <span className={`px-2 py-1 text-xs rounded-full ${config.color}`}>
+        {config.label}
+      </span>
+    );
+  };
 
-  const totalRevenue = payments.filter(p => p.status === 'completed').reduce((sum, p) => sum + p.amount, 0)
-  const totalPlatformFees = payments.filter(p => p.status === 'completed').reduce((sum, p) => sum + p.platformFee, 0)
-  const totalInstructorPayouts = payments.filter(p => p.status === 'completed').reduce((sum, p) => sum + p.instructorShare, 0)
+  const totalRevenue = payments
+    .filter((p) => p.status === "completed")
+    .reduce((sum, p) => sum + p.amount, 0);
+  const totalPlatformFees = payments
+    .filter((p) => p.status === "completed")
+    .reduce((sum, p) => sum + p.platformFee, 0);
+  const totalInstructorPayouts = payments
+    .filter((p) => p.status === "completed")
+    .reduce((sum, p) => sum + p.instructorShare, 0);
 
-  if (loading) return <div>Loading...</div>
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="flex">
@@ -83,7 +100,9 @@ export default function AdminPayments() {
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-3xl font-bold mb-2">Payment Management</h1>
-              <p className="text-gray-600">Monitor transactions, process refunds, and manage payouts</p>
+              <p className="text-gray-600">
+                Monitor transactions, process refunds, and manage payouts
+              </p>
             </div>
             <button className="bg-indigo-600 text-white py-3 px-6 rounded-lg hover:bg-indigo-700 font-semibold">
               Export Report
@@ -95,23 +114,29 @@ export default function AdminPayments() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-lg font-semibold mb-2">Total Revenue</h3>
-            <p className="text-3xl font-bold text-green-600">${totalRevenue.toLocaleString()}</p>
+            <p className="text-3xl font-bold text-green-600">
+              ${totalRevenue.toLocaleString()}
+            </p>
             <p className="text-sm text-gray-500 mt-1">All completed payments</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-lg font-semibold mb-2">Platform Fees</h3>
-            <p className="text-3xl font-bold text-blue-600">${totalPlatformFees.toLocaleString()}</p>
+            <p className="text-3xl font-bold text-blue-600">
+              ${totalPlatformFees.toLocaleString()}
+            </p>
             <p className="text-sm text-gray-500 mt-1">20% of total revenue</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-lg font-semibold mb-2">Instructor Payouts</h3>
-            <p className="text-3xl font-bold text-purple-600">${totalInstructorPayouts.toLocaleString()}</p>
+            <p className="text-3xl font-bold text-purple-600">
+              ${totalInstructorPayouts.toLocaleString()}
+            </p>
             <p className="text-sm text-gray-500 mt-1">80% to instructors</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-lg font-semibold mb-2">Pending Payments</h3>
             <p className="text-3xl font-bold text-yellow-600">
-              {payments.filter(p => p.status === 'pending').length}
+              {payments.filter((p) => p.status === "pending").length}
             </p>
             <p className="text-sm text-gray-500 mt-1">Awaiting processing</p>
           </div>
@@ -121,7 +146,9 @@ export default function AdminPayments() {
         <div className="mb-6">
           <div className="flex flex-wrap gap-4 items-center">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Search:</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Search:
+              </label>
               <input
                 type="text"
                 placeholder="Search by student, course, or transaction ID..."
@@ -132,21 +159,38 @@ export default function AdminPayments() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Status:</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Status:
+              </label>
               <div className="flex space-x-2">
                 {[
-                  { id: 'all', label: 'All Payments', count: payments.length },
-                  { id: 'completed', label: 'Completed', count: payments.filter(p => p.status === 'completed').length },
-                  { id: 'pending', label: 'Pending', count: payments.filter(p => p.status === 'pending').length },
-                  { id: 'refunded', label: 'Refunded', count: payments.filter(p => p.status === 'refunded').length }
+                  { id: "all", label: "All Payments", count: payments.length },
+                  {
+                    id: "completed",
+                    label: "Completed",
+                    count: payments.filter((p) => p.status === "completed")
+                      .length,
+                  },
+                  {
+                    id: "pending",
+                    label: "Pending",
+                    count: payments.filter((p) => p.status === "pending")
+                      .length,
+                  },
+                  {
+                    id: "refunded",
+                    label: "Refunded",
+                    count: payments.filter((p) => p.status === "refunded")
+                      .length,
+                  },
                 ].map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
                     className={`px-4 py-2 text-sm font-medium rounded ${
                       activeTab === tab.id
-                        ? 'bg-indigo-600 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        ? "bg-indigo-600 text-white"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                   >
                     {tab.label} ({tab.count})
@@ -191,27 +235,42 @@ export default function AdminPayments() {
                   <tr key={payment.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{payment.transactionId}</div>
-                        <div className="text-sm text-gray-500">{payment.paymentMethod}</div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {payment.transactionId}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {payment.paymentMethod}
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{payment.student}</div>
-                        <div className="text-sm text-gray-500">{payment.studentEmail}</div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {payment.student}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {payment.studentEmail}
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{payment.course}</div>
-                        <div className="text-sm text-gray-500">by {payment.instructor}</div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {payment.course}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          by {payment.instructor}
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">${payment.amount}</div>
+                        <div className="text-sm font-medium text-gray-900">
+                          ${payment.amount}
+                        </div>
                         <div className="text-xs text-gray-500">
-                          Platform: ${payment.platformFee} | Instructor: ${payment.instructorShare}
+                          Platform: ${payment.platformFee} | Instructor: $
+                          {payment.instructorShare}
                         </div>
                       </div>
                     </td>
@@ -222,8 +281,10 @@ export default function AdminPayments() {
                       {new Date(payment.date).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                      <button className="text-indigo-600 hover:text-indigo-900">View</button>
-                      {payment.status === 'pending' && (
+                      <button className="text-indigo-600 hover:text-indigo-900">
+                        View
+                      </button>
+                      {payment.status === "pending" && (
                         <button
                           onClick={() => handleProcessPayment(payment.id)}
                           className="text-green-600 hover:text-green-900"
@@ -231,7 +292,7 @@ export default function AdminPayments() {
                           Process
                         </button>
                       )}
-                      {payment.status === 'completed' && payment.refundable && (
+                      {payment.status === "completed" && payment.refundable && (
                         <button
                           onClick={() => handleRefundPayment(payment.id)}
                           className="text-red-600 hover:text-red-900"
@@ -251,10 +312,12 @@ export default function AdminPayments() {
           <div className="text-center py-12">
             <div className="text-6xl mb-4">💳</div>
             <h3 className="text-xl font-semibold mb-2">No payments found</h3>
-            <p className="text-gray-600">Try adjusting your search or filter criteria.</p>
+            <p className="text-gray-600">
+              Try adjusting your search or filter criteria.
+            </p>
           </div>
         )}
       </div>
     </div>
-  )
+  );
 }

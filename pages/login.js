@@ -1,55 +1,55 @@
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
-import axios from 'axios'
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import axios from "axios";
 
 export default function Login() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-  const router = useRouter()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     // Clear any existing tokens when accessing login page
-    localStorage.removeItem('token')
-    localStorage.removeItem('role')
-  }, [])
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+  }, []);
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
     try {
-      const response = await axios.post('/api/login', { email, password })
-      const { token, role } = response.data
-      localStorage.setItem('token', token)
-      localStorage.setItem('role', role)
-      if (role === 'admin') {
-        router.push('/admin/dashboard')
-      } else if (role === 'instructor') {
-        router.push('/instructor/dashboard')
+      const response = await axios.post("/api/login", { email, password });
+      const { token, role } = response.data;
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", role);
+      if (role === "admin") {
+        router.push("/admin/dashboard");
+      } else if (role === "instructor") {
+        router.push("/instructor/dashboard");
       } else {
-        router.push('/student/dashboard')
+        router.push("/student/dashboard");
       }
     } catch (err) {
-      setError('Invalid email or password')
+      setError("Invalid email or password");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleDevAccess = (role) => {
-    localStorage.setItem('token', `dev-${role}-token`)
-    localStorage.setItem('role', role)
-    if (role === 'admin') {
-      router.push('/admin/dashboard')
-    } else if (role === 'instructor') {
-      router.push('/instructor/dashboard')
+    localStorage.setItem("token", `dev-${role}-token`);
+    localStorage.setItem("role", role);
+    if (role === "admin") {
+      router.push("/admin/dashboard");
+    } else if (role === "instructor") {
+      router.push("/instructor/dashboard");
     } else {
-      router.push('/student/dashboard')
+      router.push("/student/dashboard");
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
@@ -70,7 +70,10 @@ export default function Login() {
             <input type="hidden" name="remember" defaultValue="true" />
             <div className="space-y-4">
               <div>
-                <label htmlFor="email-address" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="email-address"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Email address
                 </label>
                 <input
@@ -86,7 +89,10 @@ export default function Login() {
                 />
               </div>
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Password
                 </label>
                 <input
@@ -103,24 +109,27 @@ export default function Login() {
               </div>
             </div>
 
-          <div className="text-sm text-gray-600 text-center">
-            <p>Demo Accounts:</p>
-            <p>Admin: admin@example.com / admin</p>
-            <p>Instructor: instructor@example.com / instructor</p>
-            <p>Student: student@example.com / student</p>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="text-sm">
-              <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
-                Forgot your password?
-              </a>
+            <div className="text-sm text-gray-600 text-center">
+              <p>Demo Accounts:</p>
+              <p>Admin: admin@example.com / admin</p>
+              <p>Instructor: instructor@example.com / instructor</p>
+              <p>Student: student@example.com / student</p>
             </div>
-          </div>
 
-          {error && (
-            <div className="text-red-500 text-sm text-center">{error}</div>
-          )}
+            <div className="flex items-center justify-between">
+              <div className="text-sm">
+                <a
+                  href="#"
+                  className="font-medium text-indigo-600 hover:text-indigo-500"
+                >
+                  Forgot your password?
+                </a>
+              </div>
+            </div>
+
+            {error && (
+              <div className="text-red-500 text-sm text-center">{error}</div>
+            )}
 
             <div>
               <button
@@ -128,7 +137,7 @@ export default function Login() {
                 disabled={loading}
                 className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50"
               >
-                {loading ? 'Signing in...' : 'Sign In'}
+                {loading ? "Signing in..." : "Sign In"}
               </button>
             </div>
           </form>
@@ -140,25 +149,27 @@ export default function Login() {
               <div className="w-full border-t border-gray-300" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-gray-50 text-gray-500">Development Access</span>
+              <span className="px-2 bg-gray-50 text-gray-500">
+                Development Access
+              </span>
             </div>
           </div>
 
           <div className="mt-6 grid grid-cols-3 gap-3">
             <button
-              onClick={() => handleDevAccess('student')}
+              onClick={() => handleDevAccess("student")}
               className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
               Student
             </button>
             <button
-              onClick={() => handleDevAccess('instructor')}
+              onClick={() => handleDevAccess("instructor")}
               className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
               Instructor
             </button>
             <button
-              onClick={() => handleDevAccess('admin')}
+              onClick={() => handleDevAccess("admin")}
               className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
               Admin
@@ -167,5 +178,5 @@ export default function Login() {
         </div>
       </div>
     </div>
-  )
+  );
 }

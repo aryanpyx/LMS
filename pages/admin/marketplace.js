@@ -1,30 +1,30 @@
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import Sidebar from '../../components/Sidebar';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import Sidebar from "../../components/Sidebar";
+import axios from "axios";
 
 export default function AdminMarketplace() {
   const [courses, setCourses] = useState([]);
   const [subscriptions, setSubscriptions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('courses');
+  const [activeTab, setActiveTab] = useState("courses");
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role');
-    if (!token || role !== 'admin') {
-      router.push('/login');
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    if (!token || role !== "admin") {
+      router.push("/login");
       return;
     }
 
     const fetchMarketplaceData = async () => {
       try {
-        const response = await axios.get('/api/admin/marketplace');
+        const response = await axios.get("/api/admin/marketplace");
         setCourses(response.data.courses);
         setSubscriptions(response.data.subscriptions);
       } catch (err) {
-        console.error('Failed to fetch marketplace data', err);
+        console.error("Failed to fetch marketplace data", err);
       } finally {
         setLoading(false);
       }
@@ -35,30 +35,35 @@ export default function AdminMarketplace() {
 
   const handleEditCourse = (courseId) => {
     // In real app, this would open edit modal or navigate to edit page
-    alert(`Edit course ${courseId}`)
-  }
+    alert(`Edit course ${courseId}`);
+  };
 
   const handleDeleteCourse = (courseId) => {
-    if (confirm('Are you sure you want to delete this course?')) {
-      setCourses(courses.filter(course => course.id !== courseId))
+    if (confirm("Are you sure you want to delete this course?")) {
+      setCourses(courses.filter((course) => course.id !== courseId));
     }
-  }
+  };
 
   const handleEditSubscription = (subscriptionId) => {
     // In real app, this would open edit modal or navigate to edit page
-    alert(`Edit subscription ${subscriptionId}`)
-  }
+    alert(`Edit subscription ${subscriptionId}`);
+  };
 
   const handleDeleteSubscription = (subscriptionId) => {
-    if (confirm('Are you sure you want to delete this subscription?')) {
-      setSubscriptions(subscriptions.filter(sub => sub.id !== subscriptionId))
+    if (confirm("Are you sure you want to delete this subscription?")) {
+      setSubscriptions(
+        subscriptions.filter((sub) => sub.id !== subscriptionId),
+      );
     }
-  }
+  };
 
-  const totalRevenue = subscriptions.reduce((sum, sub) => sum + sub.revenue, 0)
-  const totalSubscribers = subscriptions.reduce((sum, sub) => sum + sub.subscribers, 0)
+  const totalRevenue = subscriptions.reduce((sum, sub) => sum + sub.revenue, 0);
+  const totalSubscribers = subscriptions.reduce(
+    (sum, sub) => sum + sub.subscribers,
+    0,
+  );
 
-  if (loading) return <div>Loading...</div>
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="flex">
@@ -66,25 +71,33 @@ export default function AdminMarketplace() {
       <div className="flex-1 p-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-4">Marketplace Management</h1>
-          <p className="text-gray-600">Manage courses, pricing, and subscription plans</p>
+          <p className="text-gray-600">
+            Manage courses, pricing, and subscription plans
+          </p>
         </div>
 
         {/* Revenue Overview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-lg font-semibold mb-2">Total Revenue</h3>
-            <p className="text-3xl font-bold text-green-600">${totalRevenue.toLocaleString()}</p>
+            <p className="text-3xl font-bold text-green-600">
+              ${totalRevenue.toLocaleString()}
+            </p>
             <p className="text-sm text-gray-500">From subscriptions</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-lg font-semibold mb-2">Active Subscribers</h3>
-            <p className="text-3xl font-bold text-blue-600">{totalSubscribers.toLocaleString()}</p>
+            <p className="text-3xl font-bold text-blue-600">
+              {totalSubscribers.toLocaleString()}
+            </p>
             <p className="text-sm text-gray-500">Total subscribers</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-lg font-semibold mb-2">Courses Sold</h3>
             <p className="text-3xl font-bold text-purple-600">
-              {courses.reduce((sum, course) => sum + course.enrolled, 0).toLocaleString()}
+              {courses
+                .reduce((sum, course) => sum + course.enrolled, 0)
+                .toLocaleString()}
             </p>
             <p className="text-sm text-gray-500">Individual enrollments</p>
           </div>
@@ -95,17 +108,17 @@ export default function AdminMarketplace() {
           <div className="border-b border-gray-200">
             <nav className="-mb-px flex space-x-8">
               {[
-                { id: 'courses', label: 'Courses' },
-                { id: 'subscriptions', label: 'Subscriptions' },
-                { id: 'pricing', label: 'Pricing & Discounts' }
+                { id: "courses", label: "Courses" },
+                { id: "subscriptions", label: "Subscriptions" },
+                { id: "pricing", label: "Pricing & Discounts" },
               ].map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={`py-2 px-1 border-b-2 font-medium text-sm ${
                     activeTab === tab.id
-                      ? 'border-indigo-500 text-indigo-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? "border-indigo-500 text-indigo-600"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                   }`}
                 >
                   {tab.label}
@@ -116,7 +129,7 @@ export default function AdminMarketplace() {
         </div>
 
         {/* Courses Tab */}
-        {activeTab === 'courses' && (
+        {activeTab === "courses" && (
           <div className="bg-white rounded-lg shadow-md">
             <div className="p-6 border-b">
               <div className="flex justify-between items-center">
@@ -158,8 +171,12 @@ export default function AdminMarketplace() {
                     <tr key={course.id}>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
-                          <div className="text-sm font-medium text-gray-900">{course.title}</div>
-                          <div className="text-sm text-gray-500">by {course.instructor}</div>
+                          <div className="text-sm font-medium text-gray-900">
+                            {course.title}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            by {course.instructor}
+                          </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -168,7 +185,9 @@ export default function AdminMarketplace() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         <div>
                           <div className="font-medium">${course.price}</div>
-                          <div className="text-gray-500 line-through">${course.originalPrice}</div>
+                          <div className="text-gray-500 line-through">
+                            ${course.originalPrice}
+                          </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -178,11 +197,13 @@ export default function AdminMarketplace() {
                         ⭐ {course.rating}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          course.status === 'active'
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-red-100 text-red-800'
-                        }`}>
+                        <span
+                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            course.status === "active"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
                           {course.status}
                         </span>
                       </td>
@@ -209,7 +230,7 @@ export default function AdminMarketplace() {
         )}
 
         {/* Subscriptions Tab */}
-        {activeTab === 'subscriptions' && (
+        {activeTab === "subscriptions" && (
           <div className="bg-white rounded-lg shadow-md">
             <div className="p-6 border-b">
               <div className="flex justify-between items-center">
@@ -248,8 +269,12 @@ export default function AdminMarketplace() {
                     <tr key={sub.id}>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
-                          <div className="text-sm font-medium text-gray-900">{sub.name}</div>
-                          <div className="text-sm text-gray-500">per {sub.period}</div>
+                          <div className="text-sm font-medium text-gray-900">
+                            {sub.name}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            per {sub.period}
+                          </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -262,11 +287,13 @@ export default function AdminMarketplace() {
                         ${sub.revenue.toLocaleString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          sub.status === 'active'
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-red-100 text-red-800'
-                        }`}>
+                        <span
+                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            sub.status === "active"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
                           {sub.status}
                         </span>
                       </td>
@@ -293,7 +320,7 @@ export default function AdminMarketplace() {
         )}
 
         {/* Pricing & Discounts Tab */}
-        {activeTab === 'pricing' && (
+        {activeTab === "pricing" && (
           <div className="space-y-6">
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold mb-4">Bulk Discounts</h2>
@@ -301,21 +328,29 @@ export default function AdminMarketplace() {
                 <div className="flex items-center justify-between p-4 border rounded">
                   <div>
                     <h3 className="font-medium">Student Discount</h3>
-                    <p className="text-sm text-gray-500">20% off for verified students</p>
+                    <p className="text-sm text-gray-500">
+                      20% off for verified students
+                    </p>
                   </div>
                   <div className="flex items-center space-x-4">
                     <span className="text-green-600 font-semibold">Active</span>
-                    <button className="text-indigo-600 hover:text-indigo-900 text-sm">Edit</button>
+                    <button className="text-indigo-600 hover:text-indigo-900 text-sm">
+                      Edit
+                    </button>
                   </div>
                 </div>
                 <div className="flex items-center justify-between p-4 border rounded">
                   <div>
                     <h3 className="font-medium">Group Purchase</h3>
-                    <p className="text-sm text-gray-500">15% off for 5+ courses</p>
+                    <p className="text-sm text-gray-500">
+                      15% off for 5+ courses
+                    </p>
                   </div>
                   <div className="flex items-center space-x-4">
                     <span className="text-green-600 font-semibold">Active</span>
-                    <button className="text-indigo-600 hover:text-indigo-900 text-sm">Edit</button>
+                    <button className="text-indigo-600 hover:text-indigo-900 text-sm">
+                      Edit
+                    </button>
                   </div>
                 </div>
               </div>
@@ -325,16 +360,24 @@ export default function AdminMarketplace() {
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h2 className="text-xl font-semibold mb-4">Promotional Campaigns</h2>
+              <h2 className="text-xl font-semibold mb-4">
+                Promotional Campaigns
+              </h2>
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-4 border rounded">
                   <div>
                     <h3 className="font-medium">Summer Sale</h3>
-                    <p className="text-sm text-gray-500">30% off all courses - June 1-30</p>
+                    <p className="text-sm text-gray-500">
+                      30% off all courses - June 1-30
+                    </p>
                   </div>
                   <div className="flex items-center space-x-4">
-                    <span className="text-orange-600 font-semibold">Scheduled</span>
-                    <button className="text-indigo-600 hover:text-indigo-900 text-sm">Edit</button>
+                    <span className="text-orange-600 font-semibold">
+                      Scheduled
+                    </span>
+                    <button className="text-indigo-600 hover:text-indigo-900 text-sm">
+                      Edit
+                    </button>
                   </div>
                 </div>
               </div>
@@ -346,5 +389,5 @@ export default function AdminMarketplace() {
         )}
       </div>
     </div>
-  )
+  );
 }

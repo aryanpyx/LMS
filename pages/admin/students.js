@@ -1,29 +1,29 @@
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import Sidebar from '../../components/Sidebar';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import Sidebar from "../../components/Sidebar";
+import axios from "axios";
 
 export default function AdminStudents() {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("all");
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role');
-    if (!token || role !== 'admin') {
-      router.push('/login');
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    if (!token || role !== "admin") {
+      router.push("/login");
       return;
     }
 
     const fetchStudentsData = async () => {
       try {
-        const response = await axios.get('/api/admin/students');
+        const response = await axios.get("/api/admin/students");
         setStudents(response.data);
       } catch (err) {
-        console.error('Failed to fetch students data', err);
+        console.error("Failed to fetch students data", err);
       } finally {
         setLoading(false);
       }
@@ -32,53 +32,65 @@ export default function AdminStudents() {
     fetchStudentsData();
   }, [router]);
 
-  const filteredStudents = students.filter(student => {
-    const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         student.email.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = selectedStatus === 'all' || student.status === selectedStatus
-    return matchesSearch && matchesStatus
-  })
+  const filteredStudents = students.filter((student) => {
+    const matchesSearch =
+      student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      student.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus =
+      selectedStatus === "all" || student.status === selectedStatus;
+    return matchesSearch && matchesStatus;
+  });
 
   const handleViewStudent = (studentId) => {
     // In real app, this would navigate to student detail page
-    alert(`View student ${studentId}`)
-  }
+    alert(`View student ${studentId}`);
+  };
 
   const handleSuspendStudent = (studentId) => {
-    if (confirm('Are you sure you want to suspend this student?')) {
-      setStudents(students.map(student =>
-        student.id === studentId
-          ? { ...student, status: 'suspended' }
-          : student
-      ))
+    if (confirm("Are you sure you want to suspend this student?")) {
+      setStudents(
+        students.map((student) =>
+          student.id === studentId
+            ? { ...student, status: "suspended" }
+            : student,
+        ),
+      );
     }
-  }
+  };
 
   const handleActivateStudent = (studentId) => {
-    setStudents(students.map(student =>
-      student.id === studentId
-        ? { ...student, status: 'active' }
-        : student
-    ))
-  }
+    setStudents(
+      students.map((student) =>
+        student.id === studentId ? { ...student, status: "active" } : student,
+      ),
+    );
+  };
 
   const handleRemoveStudent = (studentId) => {
-    if (confirm('Are you sure you want to remove this student? This action cannot be undone.')) {
-      setStudents(students.filter(student => student.id !== studentId))
+    if (
+      confirm(
+        "Are you sure you want to remove this student? This action cannot be undone.",
+      )
+    ) {
+      setStudents(students.filter((student) => student.id !== studentId));
     }
-  }
+  };
 
   const getStatusBadge = (status) => {
     const statusConfig = {
-      active: { color: 'bg-green-100 text-green-800', label: 'Active' },
-      inactive: { color: 'bg-gray-100 text-gray-800', label: 'Inactive' },
-      suspended: { color: 'bg-red-100 text-red-800', label: 'Suspended' }
-    }
-    const config = statusConfig[status] || statusConfig.inactive
-    return <span className={`px-2 py-1 text-xs rounded-full ${config.color}`}>{config.label}</span>
-  }
+      active: { color: "bg-green-100 text-green-800", label: "Active" },
+      inactive: { color: "bg-gray-100 text-gray-800", label: "Inactive" },
+      suspended: { color: "bg-red-100 text-red-800", label: "Suspended" },
+    };
+    const config = statusConfig[status] || statusConfig.inactive;
+    return (
+      <span className={`px-2 py-1 text-xs rounded-full ${config.color}`}>
+        {config.label}
+      </span>
+    );
+  };
 
-  if (loading) return <div>Loading...</div>
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="flex">
@@ -88,7 +100,9 @@ export default function AdminStudents() {
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-3xl font-bold mb-2">Student Management</h1>
-              <p className="text-gray-600">Monitor and manage all students on the platform</p>
+              <p className="text-gray-600">
+                Monitor and manage all students on the platform
+              </p>
             </div>
             <button className="bg-indigo-600 text-white py-3 px-6 rounded-lg hover:bg-indigo-700 font-semibold">
               Add New Student
@@ -100,12 +114,14 @@ export default function AdminStudents() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-lg font-semibold mb-2">Total Students</h3>
-            <p className="text-3xl font-bold text-blue-600">{students.length}</p>
+            <p className="text-3xl font-bold text-blue-600">
+              {students.length}
+            </p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-lg font-semibold mb-2">Active Students</h3>
             <p className="text-3xl font-bold text-green-600">
-              {students.filter(s => s.status === 'active').length}
+              {students.filter((s) => s.status === "active").length}
             </p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-md">
@@ -117,7 +133,10 @@ export default function AdminStudents() {
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h3 className="text-lg font-semibold mb-2">Total Revenue</h3>
             <p className="text-3xl font-bold text-yellow-600">
-              ${students.reduce((sum, s) => sum + s.totalSpent, 0).toLocaleString()}
+              $
+              {students
+                .reduce((sum, s) => sum + s.totalSpent, 0)
+                .toLocaleString()}
             </p>
           </div>
         </div>
@@ -126,7 +145,9 @@ export default function AdminStudents() {
         <div className="mb-6">
           <div className="flex flex-wrap gap-4 items-center">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Search:</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Search:
+              </label>
               <input
                 type="text"
                 placeholder="Search by name or email..."
@@ -137,7 +158,9 @@ export default function AdminStudents() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Status:</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Status:
+              </label>
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
@@ -186,10 +209,18 @@ export default function AdminStudents() {
                   <tr key={student.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <img className="h-10 w-10 rounded-full" src={student.avatar} alt={student.name} />
+                        <img
+                          className="h-10 w-10 rounded-full"
+                          src={student.avatar}
+                          alt={student.name}
+                        />
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">{student.name}</div>
-                          <div className="text-sm text-gray-500">{student.email}</div>
+                          <div className="text-sm font-medium text-gray-900">
+                            {student.name}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {student.email}
+                          </div>
                         </div>
                       </div>
                     </td>
@@ -202,9 +233,15 @@ export default function AdminStudents() {
                           <div
                             className="bg-indigo-600 h-2 rounded-full"
                             style={{
-                              width: `${student.enrolledCourses > 0
-                                ? Math.round((student.completedCourses / student.enrolledCourses) * 100)
-                                : 0}%`
+                              width: `${
+                                student.enrolledCourses > 0
+                                  ? Math.round(
+                                      (student.completedCourses /
+                                        student.enrolledCourses) *
+                                        100,
+                                    )
+                                  : 0
+                              }%`,
                             }}
                           ></div>
                         </div>
@@ -229,7 +266,7 @@ export default function AdminStudents() {
                       >
                         View
                       </button>
-                      {student.status === 'active' ? (
+                      {student.status === "active" ? (
                         <button
                           onClick={() => handleSuspendStudent(student.id)}
                           className="text-yellow-600 hover:text-yellow-900"
@@ -262,10 +299,12 @@ export default function AdminStudents() {
           <div className="text-center py-12">
             <div className="text-6xl mb-4">👥</div>
             <h3 className="text-xl font-semibold mb-2">No students found</h3>
-            <p className="text-gray-600">Try adjusting your search or filter criteria.</p>
+            <p className="text-gray-600">
+              Try adjusting your search or filter criteria.
+            </p>
           </div>
         )}
       </div>
     </div>
-  )
+  );
 }
